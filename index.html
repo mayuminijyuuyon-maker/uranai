@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>🔮 九星気学占い</title>
+    <title>🔮 うらない</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
@@ -18,21 +18,9 @@
         .input-group { margin-bottom: 20px; }
         .input-group label { display: block; font-weight: bold; color: #764ba2; margin-bottom: 12px; font-size: 1.2em; }
         .date-inputs { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; justify-content: center; }
-        .date-inputs select { 
-            padding: 15px; 
-            border: 3px solid #e0e0e0; 
-            border-radius: 12px; 
-            font-size: 1.3em; 
-            font-weight: bold;
-            text-align: center;
-            background: white;
-        }
+        .date-inputs select { padding: 15px; border: 3px solid #e0e0e0; border-radius: 12px; font-size: 1.3em; font-weight: bold; text-align: center; background: white; }
         .date-inputs select:focus { outline: none; border-color: #764ba2; }
-        .date-inputs .year-input { 
-            width: 110px; 
-            font-size: 1.3em;
-            background: #f8f4ff;
-        }
+        .date-inputs .year-input { width: 110px; font-size: 1.3em; background: #f8f4ff; }
         .date-inputs .month-input, .date-inputs .day-input { width: 80px; }
         .date-inputs span { color: #666; font-size: 1.2em; font-weight: bold; }
         .btn { width: 100%; padding: 18px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; border-radius: 30px; font-size: 1.3em; font-weight: bold; cursor: pointer; transition: transform 0.2s, box-shadow 0.2s; margin-top: 10px; }
@@ -67,12 +55,20 @@
         .total-score .score-value { font-size: 2em; color: white; }
         .love-advice { background: linear-gradient(135deg, #ffeef8 0%, #ffe6f0 100%); border-radius: 12px; padding: 15px; margin: 10px 0; border-left: 4px solid #e84393; }
         .love-label { font-weight: bold; color: #e84393; margin-bottom: 5px; }
+        .direction-container { display: flex; gap: 15px; margin: 15px 0; }
+        .direction-box { flex: 1; border-radius: 15px; padding: 20px; text-align: center; }
+        .direction-box.good { background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%); }
+        .direction-box.bad { background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%); }
+        .direction-label { font-size: 0.9em; color: #666; margin-bottom: 8px; }
+        .direction-value { font-size: 1.8em; font-weight: bold; }
+        .direction-box.good .direction-value { color: #00b894; }
+        .direction-box.bad .direction-value { color: #e17055; }
         footer { text-align: center; color: rgba(255,255,255,0.8); margin-top: 30px; font-size: 0.9em; }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>🔮 当たるかどうかはさておき</h1>
+        <h1>🔮 うらない</h1>
         <p class="subtitle">九星気学で今の運勢をチェック✨</p>
         
         <div class="input-card">
@@ -129,8 +125,20 @@
                 <div class="score-item"><div class="score-label">💪 健康運</div><div class="score-value" id="healthScore">--</div></div>
             </div>
             
+            <div class="section-title">🧭 今月の方位</div>
+            <div class="direction-container">
+                <div class="direction-box good">
+                    <div class="direction-label">✨ 行くと良い方位</div>
+                    <div class="direction-value" id="goodDirection">--</div>
+                </div>
+                <div class="direction-box bad">
+                    <div class="direction-label">⚠️ 避けたい方位</div>
+                    <div class="direction-value" id="badDirection">--</div>
+                </div>
+            </div>
+            
             <div class="section-title">📝 今月のアドバイス</div>
-            <div class="advice-box"><div class="advice-label">😊 今月はこんな気分</div><div id="personality"></div></div>
+            <div class="advice-box"><div class="advice-label">😊 今月はこんな気分なりがち</div><div id="personality"></div></div>
             <div class="advice-box"><div class="advice-label">💡 アドバイス</div><div id="advice"></div></div>
             <div class="advice-box"><div class="advice-label">💼 仕事運</div><div id="workAdvice"></div></div>
             <div class="advice-box"><div class="advice-label">👥 対人運</div><div id="relationAdvice"></div></div>
@@ -143,31 +151,26 @@
     
     <script>
         const kyuuData = {
-            1: { name: "一白水星", emoji: "💧", keyword: "潜伏・準備", meaning: "今は準備期間！焦んなくてOK", personality: "冷静沈着、内省的、忍耐強い", work: "焦らずリサーチ、次のステップの準備", relation: "相手の話をよく聞くと好感度UP", advice: "急がば回れ、まずは情報収集！", warning: "返信を急かしたり、結論を急ぐのはNG", love: "焦らず相手の気持ちを待って", scores: { total: 45, work: 40, love: 45, money: 40, health: 50 } },
-            2: { name: "二黒土星", emoji: "🌍", keyword: "収穫・蓄積", meaning: "地道にやってきたこと、ちゃんと実るよ", personality: "堅実、忍耐、縁の下の力持ち", work: "頑張ってきたことがやっと実る", relation: "誰かのサポートに回ると運気UP", advice: "地道な努力は裏切らない！", warning: "SNSで見栄を張ったり、無理な背伸びはNG", love: "相手の話をじっくり聞いてあげて", scores: { total: 70, work: 65, love: 80, money: 90, health: 55 } },
-            3: { name: "三碧木星", emoji: "🌱", keyword: "発動・スタート", meaning: "動くなら今！やりたいことGO", personality: "行動的、積極的、開拓精神", work: "やりたいこと今すぐ始めて！", relation: "新しいコミュニティに飛び込むチャンス", advice: "迷ったら動け、動けば変わる！", warning: "「どっちでもいい」と決断を先延ばしにしない", love: "気になる人には自分から声をかけて", scores: { total: 75, work: 85, love: 60, money: 45, health: 100 } },
-            4: { name: "四緑木星", emoji: "🌿", keyword: "成長・整備", meaning: "周りからの信頼がついてくる時期", personality: "社交的、調和的、信用第一", work: "人との繋がりが仕事を運んでくる", relation: "いい人を紹介してもらえるかも", advice: "信用は一日にして成らず！", warning: "ドタキャンや遅刻は信用を失うよ", love: "約束は必ず守って信頼を築こう", scores: { total: 80, work: 75, love: 100, money: 65, health: 75 } },
-            5: { name: "五黄土星", emoji: "⭐", keyword: "停滞・待機", meaning: "今は充電！無理に動かなくていいよ", personality: "影響力大、中心的存在", work: "今は充電期間、無理に動かない", relation: "静かに見守る時期、無理に関わらない", advice: "石橋を叩いて渡れ！", warning: "思いつきで大きな決断をしないで", love: "一人の時間で自分磨きを", scores: { total: 30, work: 30, love: 25, money: 30, health: 35 } },
-            6: { name: "六白金星", emoji: "🌟", keyword: "充実・完結", meaning: "まとめ役が似合う時期、頼られるよ", personality: "リーダー気質、完璧主義", work: "リーダー役を引き受けて吉！", relation: "上司や先輩に可愛がられる", advice: "言葉より行動で示せ！", warning: "相手の意見を聞かずに決めないで", love: "将来の話をしてみるといいかも", scores: { total: 85, work: 95, love: 40, money: 80, health: 90 } },
-            7: { name: "七赤金星", emoji: "✨", keyword: "収穫・喜び", meaning: "楽しいこといっぱい！遊びも充実", personality: "明るい、社交的、楽天的", work: "お金の話がまとまりやすい時期", relation: "飲み会や遊びが盛り上がる", advice: "笑う門には福来る！", warning: "衝動買いやおごりすぎに注意", love: "食事やお出かけに誘ってみて", scores: { total: 90, work: 55, love: 85, money: 100, health: 70 } },
-            8: { name: "八白土星", emoji: "⛰️", keyword: "変化・転換", meaning: "流れ変わるよ！新しいことやってみ", personality: "頑固、意志が強い、変化を好む", work: "転職・副業始めるならチャンス！", relation: "初対面の人との縁がアツい", advice: "変化は成長のチャンス！", warning: "「今のままでいい」と変化を拒むのはNG", love: "思い切って連絡先を交換してみて", scores: { total: 55, work: 70, love: 50, money: 35, health: 65 } },
-            9: { name: "九紫火星", emoji: "🔥", keyword: "頂点・完成", meaning: "キラキラ期✨目立っちゃって！", personality: "華やか、知的、注目を集める", work: "自分をアピール！評価される時", relation: "注目されやすい、目立つ時", advice: "輝くなら今！自分を魅せろ！", warning: "自慢話や上から目線はNG", love: "デートは華やかな場所がおすすめ", scores: { total: 100, work: 100, love: 75, money: 50, health: 60 } }
+            1: { name: "一白水星", emoji: "💧", keyword: "潜伏・準備", meaning: "今は準備期間！焦んなくてOK", personality: "冷静沈着、内省的、忍耐強い", work: "焦らずリサーチ、次のステップの準備", relation: "相手の話をよく聞くと好感度UP", advice: "急がば回れ、まずは情報収集！", warning: "返信を急かしたり、結論を急ぐのはNG", love: "焦らず相手の気持ちを待って", goodDir: "東南", badDir: "東北", scores: { total: 45, work: 40, love: 45, money: 40, health: 50 } },
+            2: { name: "二黒土星", emoji: "🌍", keyword: "収穫・蓄積", meaning: "地道にやってきたこと、ちゃんと実るよ", personality: "堅実、忍耐、縁の下の力持ち", work: "頑張ってきたことがやっと実る", relation: "誰かのサポートに回ると運気UP", advice: "地道な努力は裏切らない！", warning: "SNSで見栄を張ったり、無理な背伸びはNG", love: "相手の話をじっくり聞いてあげて", goodDir: "西", badDir: "南", scores: { total: 70, work: 65, love: 80, money: 90, health: 55 } },
+            3: { name: "三碧木星", emoji: "🌱", keyword: "発動・スタート", meaning: "動くなら今！やりたいことGO", personality: "行動的、積極的、開拓精神", work: "やりたいこと今すぐ始めて！", relation: "新しいコミュニティに飛び込むチャンス", advice: "迷ったら動け、動けば変わる！", warning: "「どっちでもいい」と決断を先延ばしにしない", love: "気になる人には自分から声をかけて", goodDir: "南", badDir: "西", scores: { total: 75, work: 85, love: 60, money: 45, health: 100 } },
+            4: { name: "四緑木星", emoji: "🌿", keyword: "成長・整備", meaning: "周りからの信頼がついてくる時期", personality: "社交的、調和的、信用第一", work: "人との繋がりが仕事を運んでくる", relation: "いい人を紹介してもらえるかも", advice: "信用は一日にして成らず！", warning: "ドタキャンや遅刻は信用を失うよ", love: "約束は必ず守って信頼を築こう", goodDir: "北", badDir: "東", scores: { total: 80, work: 75, love: 100, money: 65, health: 75 } },
+            5: { name: "五黄土星", emoji: "⭐", keyword: "停滞・待機", meaning: "今は充電！無理に動かなくていいよ", personality: "影響力大、中心的存在", work: "今は充電期間、無理に動かない", relation: "静かに見守る時期、無理に関わらない", advice: "石橋を叩いて渡れ！", warning: "思いつきで大きな決断をしないで", love: "一人の時間で自分磨きを", goodDir: "なし", badDir: "全方位注意", scores: { total: 30, work: 30, love: 25, money: 30, health: 35 } },
+            6: { name: "六白金星", emoji: "🌟", keyword: "充実・完結", meaning: "まとめ役が似合う時期、頼られるよ", personality: "リーダー気質、完璧主義", work: "リーダー役を引き受けて吉！", relation: "上司や先輩に可愛がられる", advice: "言葉より行動で示せ！", warning: "相手の意見を聞かずに決めないで", love: "将来の話をしてみるといいかも", goodDir: "東南", badDir: "北", scores: { total: 85, work: 95, love: 40, money: 80, health: 90 } },
+            7: { name: "七赤金星", emoji: "✨", keyword: "収穫・喜び", meaning: "楽しいこといっぱい！遊びも充実", personality: "明るい、社交的、楽天的", work: "お金の話がまとまりやすい時期", relation: "飲み会や遊びが盛り上がる", advice: "笑う門には福来る！", warning: "衝動買いやおごりすぎに注意", love: "食事やお出かけに誘ってみて", goodDir: "東", badDir: "西北", scores: { total: 90, work: 55, love: 85, money: 100, health: 70 } },
+            8: { name: "八白土星", emoji: "⛰️", keyword: "変化・転換", meaning: "流れ変わるよ！新しいことやってみ", personality: "頑固、意志が強い、変化を好む", work: "転職・副業始めるならチャンス！", relation: "初対面の人との縁がアツい", advice: "変化は成長のチャンス！", warning: "「今のままでいい」と変化を拒むのはNG", love: "思い切って連絡先を交換してみて", goodDir: "西南", badDir: "東南", scores: { total: 55, work: 70, love: 50, money: 35, health: 65 } },
+            9: { name: "九紫火星", emoji: "🔥", keyword: "頂点・完成", meaning: "キラキラ期✨目立っちゃって！", personality: "華やか、知的、注目を集める", work: "自分をアピール！評価される時", relation: "注目されやすい、目立つ時", advice: "輝くなら今！自分を魅せろ！", warning: "自慢話や上から目線はNG", love: "デートは華やかな場所がおすすめ", goodDir: "東北", badDir: "西南", scores: { total: 100, work: 100, love: 75, money: 50, health: 60 } }
         };
 
         const setsuiriDays = [5, 4, 6, 5, 5, 6, 7, 7, 8, 8, 7, 7];
 
-        // 年の選択肢（1956年〜2025年）
-        for (let i = 1956; i <= 2025; i++) { 
-            document.getElementById('birthYear').innerHTML += `<option value="${i}">${i}</option>`; 
-        }
+        for (let i = 1956; i <= 2025; i++) { document.getElementById('birthYear').innerHTML += `<option value="${i}">${i}</option>`; }
         for (let i = 1; i <= 12; i++) { document.getElementById('birthMonth').innerHTML += `<option value="${i}">${i}</option>`; }
         for (let i = 1; i <= 31; i++) { document.getElementById('birthDay').innerHTML += `<option value="${i}">${i}</option>`; }
 
         function calcHonmeisei(year, month, day) {
             let adjustedYear = year;
-            if (month === 1 || (month === 2 && day < setsuiriDays[1])) {
-                adjustedYear = year - 1;
-            }
+            if (month === 1 || (month === 2 && day < setsuiriDays[1])) { adjustedYear = year - 1; }
             const sum = String(adjustedYear).split('').reduce((a, b) => a + parseInt(b), 0);
             let honmei = 11 - (sum % 9);
             if (honmei > 9) honmei -= 9;
@@ -177,43 +180,31 @@
 
         function calcGetsuMeisei(year, month, day) {
             let adjustedYear = year;
-            if (month === 1 || (month === 2 && day < setsuiriDays[1])) {
-                adjustedYear = year - 1;
-            }
+            if (month === 1 || (month === 2 && day < setsuiriDays[1])) { adjustedYear = year - 1; }
             const honmei = calcHonmeisei(year, month, day);
-            
             let adjustedMonth = month;
             if (day < setsuiriDays[month - 1]) {
                 adjustedMonth = month - 1;
                 if (adjustedMonth === 0) adjustedMonth = 12;
             }
-            
             let group;
-            if (honmei === 1 || honmei === 4 || honmei === 7) {
-                group = 1;
-            } else if (honmei === 3 || honmei === 6 || honmei === 9) {
-                group = 2;
-            } else {
-                group = 3;
-            }
-            
+            if (honmei === 1 || honmei === 4 || honmei === 7) { group = 1; }
+            else if (honmei === 3 || honmei === 6 || honmei === 9) { group = 2; }
+            else { group = 3; }
             const startStars = { 1: 8, 2: 2, 3: 5 };
             const startStar = startStars[group];
-            
             let monthsFrom2 = adjustedMonth - 2;
             if (monthsFrom2 < 0) monthsFrom2 += 12;
-            
             let getsuMei = startStar - monthsFrom2;
             while (getsuMei <= 0) getsuMei += 9;
             while (getsuMei > 9) getsuMei -= 9;
-            
             return getsuMei;
         }
 
         function calcYearChuukyuu(year) {
             const sum = String(year).split('').reduce((a, b) => a + parseInt(b), 0);
-            let chuu = 11 - (sum % 9); 
-            if (chuu > 9) chuu -= 9; 
+            let chuu = 11 - (sum % 9);
+            if (chuu > 9) chuu -= 9;
             if (chuu <= 0) chuu += 9;
             return chuu;
         }
@@ -246,7 +237,6 @@
             
             const honmei = calcHonmeisei(year, month, day);
             const getsuMei = calcGetsuMeisei(year, month, day);
-            
             const yearChuu = calcYearChuukyuu(currentYear);
             const monthChuu = calcMonthChuukyuu(currentYear, currentMonth);
             const yearKyuu = getKyuuNumber(honmei, yearChuu);
@@ -261,7 +251,6 @@
             document.getElementById('honmeiName').textContent = honmeiData.name;
             document.getElementById('getsuEmoji').textContent = getsuData.emoji;
             document.getElementById('getsuName').textContent = getsuData.name;
-            
             document.getElementById('yearKeyword').textContent = yearData.keyword;
             document.getElementById('yearMeaning').textContent = yearData.meaning;
             document.getElementById('monthKeyword').textContent = monthData.keyword;
@@ -280,6 +269,8 @@
             document.getElementById('relationAdvice').textContent = monthData.relation;
             document.getElementById('loveAdvice').textContent = monthData.love;
             document.getElementById('warning').textContent = monthData.warning;
+            document.getElementById('goodDirection').textContent = monthData.goodDir;
+            document.getElementById('badDirection').textContent = monthData.badDir;
             
             document.getElementById('resultCard').classList.add('show');
             document.getElementById('resultCard').scrollIntoView({ behavior: 'smooth' });
