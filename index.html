@@ -1,9 +1,251 @@
 <!DOCTYPE html>
-<html lang="ja"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>九星気学占い</title>
-<style>:root{--p:#7c4dba;--k:#ec6da5;--i:#46314f}*{box-sizing:border-box;min-width:0}html{-webkit-text-size-adjust:100%;text-size-adjust:100%;overflow-x:hidden}body{margin:0;min-height:100dvh;overflow-x:hidden;font-family:"Yu Gothic UI","Hiragino Sans",sans-serif;color:var(--i);background:linear-gradient(135deg,#f7eaff,#fffaf5 45%,#ffe8f1);overflow-wrap:anywhere}main{width:min(1000px,calc(100% - 32px));margin:28px auto 60px;padding-bottom:env(safe-area-inset-bottom)}header{text-align:center;padding:25px 12px}header p{margin:10px auto;line-height:1.7}h1{font-size:clamp(30px,7vw,40px);line-height:1.25;margin:5px;background:linear-gradient(90deg,var(--p),var(--k));-webkit-background-clip:text;color:transparent}.panel,.card{width:100%;background:#fffc;border:1px solid #eadcf1;border-radius:22px;box-shadow:0 12px 32px #55306920;padding:22px;margin:18px 0}.inputs,.stars,.grid,.scores,.dirs{display:grid;gap:14px;grid-template-columns:minmax(0,1fr)}.inputs{grid-template-columns:minmax(0,1fr) minmax(0,1fr) auto;align-items:end}.stars,.grid,.dirs{grid-template-columns:repeat(2,minmax(0,1fr))}.scores{grid-template-columns:repeat(5,minmax(0,1fr))}label,small{display:block;color:#786781;margin-bottom:6px}input{display:block;width:100%;max-width:100%;min-height:46px;padding:10px 12px;border:1px solid #d9c4e4;border-radius:12px;font:inherit;font-size:16px;color:var(--i);background:#fff;-webkit-appearance:none;appearance:none}button{min-height:46px;border:0;border-radius:13px;padding:12px 24px;color:#fff;font:inherit;font-weight:bold;background:linear-gradient(135deg,var(--p),var(--k));cursor:pointer;touch-action:manipulation}.star,.score,.dir,.row{width:100%;background:#faf6fc;border-radius:14px;padding:14px}.star b,.head b{font-size:24px;color:#6d3f93}.card{padding:0;overflow:hidden}.head{padding:18px 22px;background:linear-gradient(120deg,#7445aa,#d45a9b);color:#fff}.head b{display:block;color:#fff}.head i{font-style:normal}.body{padding:20px}.msg{font-size:18px;font-weight:bold;line-height:1.65}.row{margin:8px 0;line-height:1.6}.warn{background:#fff2f6;border-left:4px solid var(--k)}.score{text-align:center}.score b{display:block;font-size:clamp(20px,4vw,25px);color:#75439b;white-space:nowrap}.bar{height:7px;background:#eadff0;border-radius:8px;overflow:hidden}.bar i{display:block;height:100%;background:linear-gradient(90deg,var(--p),var(--k));border-radius:8px}.dir{text-align:center}.dir b{font-size:23px}.good{background:#effaf5}.bad{background:#fff3f4}@media(max-width:700px){main{width:calc(100% - 24px);margin:12px auto 36px}header{padding:18px 8px 10px}.panel{padding:16px;margin:12px 0;border-radius:18px}.inputs,.grid,.stars,.dirs{grid-template-columns:minmax(0,1fr)}.inputs{gap:12px}.inputs button{width:100%}.grid{gap:12px;margin:12px 0}.card{margin:0;border-radius:18px}.head{padding:16px 18px}.body{padding:16px}.scores{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.score:first-child{grid-column:1/-1}.score{padding:13px 8px}.dirs{margin-top:14px}.row{padding:12px}.msg{font-size:17px}.star b,.head b,.dir b{font-size:21px}}@media(max-width:380px){main{width:calc(100% - 16px)}header p{font-size:14px}.panel{padding:13px}.head,.body{padding:14px}.scores{gap:8px}.score b{font-size:20px}.row{font-size:14px}}.anken-warning{display:none;margin:12px 0 0;padding:12px 14px;border:1px solid #ef9aa9;border-left:5px solid #d8395f;border-radius:12px;background:#fff0f3;color:#a51639;font-weight:800;line-height:1.5}.anken-warning.show{display:block}@media(max-width:700px){.anken-warning{font-size:15px;padding:11px 12px}}</style>
-</style></head><body><main><header><div style="font-size:44px">🔮</div><h1>九星気学占い</h1><small style="display:block;color:#7c4dba;font-weight:700">節入り基準 v2</small><p>生年月日と占いたい日から、今年と今月の運勢を読み解きます</p></header><section class="panel"><div class="inputs"><div><label>生まれた年月日</label><input id="birth" type="date" value="1984-02-01"></div><div><label>占いたい日</label><input id="target" type="date" value="2026-08-01"></div><button id="go" type="button">占う ✨</button></div><div class="stars"><div class="star"><small>本命星</small><b id="main"></b></div><div class="star"><small>月命星</small><b id="monthStar"></b></div></div></section><section class="grid"><article class="card"><div class="head"><span>今年の運勢</span><b><i id="yk"></i> の年</b></div><div class="body"><p class="msg" id="ym"></p><div id="yearAnken" class="anken-warning" role="alert">⚠️ 本命星に暗剣殺：ふいうちの災いあり</div><div id="yr"></div></div></article><article class="card"><div class="head"><span>今月の運勢</span><b><i id="mk"></i> の月</b></div><div class="body"><p class="msg" id="mm"></p><div id="monthAnken" class="anken-warning" role="alert">⚠️ 今月はふいうちの災いに注意…！</div><div id="mr"></div></div></article></section><section class="panel"><h2>今月の運勢スコア</h2><div class="scores" id="scores"></div><div class="dirs"><div class="dir good"><small>今月行くと良い</small><b id="good"></b></div><div class="dir bad"><small>今月は避けたい</small><b id="bad"></b></div></div></section></main>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>今のわたし、星的にはどう？</title>
+</head>
+<body>
+<div id="astro-now-app">
+<style>
+#astro-now-app{--ink:#293241;--navy:#394867;--lav:#f5f2fb;--gold:#f4c95d;--green:#3a9d78;--red:#d95d65;--amber:#e3a72f;max-width:760px;margin:auto;color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans JP",sans-serif;line-height:1.65}
+#astro-now-app *{box-sizing:border-box}.an-hero{padding:24px 18px;border-radius:18px;background:linear-gradient(135deg,#394867,#596a92);color:#fff}.an-hero h1{font-size:clamp(24px,7vw,38px);line-height:1.25;margin:0 0 6px}.an-hero p{margin:0;opacity:.9}
+.an-box{margin-top:16px;padding:16px;background:#fff;border:1px solid #e5e8ef;border-radius:16px;box-shadow:0 5px 18px #27324a12}.an-title{font-weight:800;color:var(--navy);margin:0 0 12px}.an-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}.an-field label{display:block;font-size:12px;font-weight:700;margin-bottom:4px}
+.an-field input,.an-field select{width:100%;min-height:44px;border:1px solid #cbd2df;border-radius:10px;padding:8px 10px;background:#fff;font-size:16px}.an-btn{width:100%;min-height:48px;margin-top:14px;border:0;border-radius:12px;background:var(--gold);color:#253047;font-size:16px;font-weight:800;cursor:pointer}
+.an-main{border-left:6px solid var(--amber);background:#fffaf0}.an-main pre,.an-reading{white-space:pre-wrap;font:inherit;margin:0}.an-cards{display:grid;gap:12px}.an-card{padding:15px;border-radius:14px;background:var(--lav);border:1px solid #e5dff0}.an-card-head{display:flex;align-items:center;gap:8px;flex-wrap:wrap}.an-rank{display:grid;place-items:center;width:28px;height:28px;border-radius:50%;background:var(--navy);color:#fff;font-weight:800}.an-card h3{font-size:17px;margin:0;flex:1}.an-badge{padding:3px 9px;border-radius:999px;color:#fff;font-size:12px;font-weight:800}.an-badge.追い風{background:var(--green)}.an-badge.変化の時{background:var(--amber)}.an-badge.要調整{background:var(--red)}
+.an-meta{font-size:13px;color:#687386;margin:7px 0}.an-sky{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}.an-sky div{padding:10px;border-radius:10px;background:#f5f7fa}.an-note{font-size:12px;color:#687386}.an-empty{padding:18px;text-align:center;background:#f5f7fa;border-radius:12px}
+@media(max-width:520px){.an-grid{grid-template-columns:1fr}.an-sky{grid-template-columns:1fr}.an-box{padding:14px}.an-hero{border-radius:0}}
+</style>
+
+<section class="an-hero">
+<div style="font-size:12px;opacity:.8">動作確認版 v6</div>
+<h1>今のわたし、星的にはどう？</h1>
+<p>追い風・変化・見直しポイントと、今の過ごし方</p>
+</section>
+
+<section class="an-box">
+<h2 class="an-title">分析設定</h2>
+<div class="an-grid">
+<div class="an-field"><label for="an-date">分析日（現在の日付）</label><input id="an-date" type="date"></div>
+<div class="an-field"><label for="an-birth">生年月日</label><input id="an-birth" type="date"></div>
+<div class="an-field"><label for="an-time">出生時刻（任意）</label><input id="an-time" type="time" value="12:00"></div>
+<div class="an-field"><label for="an-place">出生都道府県</label>
+<select id="an-place">
+<option>北海道</option><option>青森県</option><option>岩手県</option><option>宮城県</option><option>秋田県</option><option>山形県</option><option>福島県</option>
+<option>茨城県</option><option>栃木県</option><option>群馬県</option><option>埼玉県</option><option>千葉県</option><option>東京都</option><option>神奈川県</option>
+<option>新潟県</option><option>富山県</option><option>石川県</option><option>福井県</option><option>山梨県</option><option>長野県</option><option>岐阜県</option>
+<option>静岡県</option><option selected>愛知県</option><option>三重県</option><option>滋賀県</option><option>京都府</option><option>大阪府</option><option>兵庫県</option>
+<option>奈良県</option><option>和歌山県</option><option>鳥取県</option><option>島根県</option><option>岡山県</option><option>広島県</option><option>山口県</option>
+<option>徳島県</option><option>香川県</option><option>愛媛県</option><option>高知県</option><option>福岡県</option><option>佐賀県</option><option>長崎県</option>
+<option>熊本県</option><option>大分県</option><option>宮崎県</option><option>鹿児島県</option><option>沖縄県</option>
+</select></div>
+</div>
+<button class="an-btn" id="an-run" type="button">この内容で占う</button>
+<div id="an-status" class="an-note" role="status" style="margin-top:8px"></div>
+<div id="an-error" style="display:none;margin-top:10px;padding:10px;border-radius:10px;background:#ffe2e2;color:#8a1f2d;font-weight:bold"></div>
+</section>
+
+<section class="an-box an-main"><h2 class="an-title">今の最重要テーマ｜4つのポイント</h2><pre id="an-top">結果を計算しています…</pre></section>
+<section class="an-box"><h2 class="an-title">今、影響が強いこと（最大6件）</h2><div class="an-cards" id="an-cards"><div class="an-empty">結果を計算しています…</div></div></section>
+<section class="an-box"><h2 class="an-title">参考｜今の空の動き</h2><div class="an-sky" id="an-sky"></div><p class="an-note">🟢 追い風：自然に進めやすい　🟡 変化の時：新しい動きが起きやすい　🔴 要調整：焦らず見直しが必要</p></section>
+<section class="an-box an-note">天体位置は低精度の近似式を使用しています。厳密な時期判断には高精度占星術ソフトとの照合をおすすめします。</section>
+
 <script>
-const names=['','一白水星','二黒土星','三碧木星','四緑木星','五黄土星','六白金星','七赤金星','八白土星','九紫火星'];
-const F={1:['潜伏・準備','今は準備期間！焦んなくてOK','冷静沈着、内省的、忍耐強い','焦らずリサーチ、次のステップの準備','相手の話をよく聞くと好感度UP','焦らず相手の気持ちを待って','急がば回れ、まずは情報収集！','返信を急かしたり、結論を急ぐのはNG',45,40,45,40,50],8:['変化・転換','流れ変わるよ！新しいことやってみ','頑固、意志が強い、変化を好む','転職・副業始めるならチャンス！','初対面の人との縁がアツい','思い切って連絡先を交換してみて','変化は成長のチャンス！','変化を拒むのはNG',55,70,50,35,65],3:['発動・スタート','動くなら今！やりたいことGO','行動的、積極的、開拓精神','やりたいこと今すぐ始めて！','新しいコミュニティに飛び込むチャンス','気になる人には自分から声をかけて','迷ったら動け、動けば変わる！','決断を先延ばしにしない',75,85,60,45,100],4:['成長・整備','周りからの信頼がついてくる時期','社交的、調和的、信用第一','人との繋がりが仕事を運んでくる','いい人を紹介してもらえるかも','約束は必ず守って信頼を築こう','信用は一日にして成らず！','ドタキャンや遅刻は信用を失うよ',80,75,100,65,75],9:['頂点・完成','キラキラ期✨目立っちゃって！','華やか、知的、注目を集める','自分をアピール！評価される時','注目されやすい、目立つ時','デートは華やかな場所がおすすめ','輝くなら今！自分を魅せろ！','自慢話や上から目線はNG',100,100,75,50,60],2:['収穫・蓄積','地道にやってきたこと、ちゃんと実るよ','堅実、忍耐、縁の下の力持ち','頑張ってきたことがやっと実る','誰かのサポートに回ると運気UP','相手の話をじっくり聞いてあげて','地道な努力は裏切らない！','SNSで見栄を張ったり、無理な背伸びはNG',70,65,80,90,55],7:['収穫・喜び','楽しいこといっぱい！遊びも充実','明るい、社交的、楽天的','お金の話がまとまりやすい時期','飲み会や遊びが盛り上がる','食事やお出かけに誘ってみて','笑う門には福来る！','衝動買いやおごりすぎに注意',90,55,85,100,70],6:['充実・完結','まとめ役が似合う時期、頼られるよ','リーダー気質、完璧主義','リーダー役を引き受けて吉！','上司や先輩に可愛がられる','将来の話をしてみるといいかも','言葉より行動で示せ！','相手の意見を聞かずに決めないで',85,95,40,80,90],5:['停滞・待機','今は充電！無理に動かなくていいよ','影響力大、中心的存在','今は充電期間、無理に動かない','静かに見守る時期','一人の時間で自分磨きを','石橋を叩いて渡れ！','思いつきで大きな決断をしないで',30,30,25,30,35]};
-const dirs=['東南','南','西南','東','中央','西','東北','北','西北'],pal=[4,9,2,3,5,7,8,1,6],base=[9,5,7,8,1,3,4,6,2],W=n=>((n-1)%9+9)%9+1,root=n=>{while(n>9)n=[...String(n)].reduce((a,b)=>a+ +b,0);return n};function termDay(y,i){const old=[6.11,4.6295,6.3826,5.59,6.318,6.5,7.928,8.35,8.44,9.098,8.218,7.9],modern=[5.4055,3.87,5.63,4.81,5.52,5.678,7.108,7.5,7.646,8.318,7.438,7.18],yy=y%100,c=(y<2000?old:modern)[i];return Math.floor(yy*.2422+c)-Math.floor((yy-1)/4)}function before(d,m,day){return d.getTime()<new Date(d.getFullYear(),m-1,day,12).getTime()}function calcMainStar(d){let y=d.getFullYear();if(before(d,2,termDay(y,1)))y--;return W(11-root([...String(y)].reduce((a,b)=>a+ +b,0)))}function solarMonth(d){const y=d.getFullYear(),months=[1,2,3,4,5,6,7,8,9,10,11,12],map=[12,1,2,3,4,5,6,7,8,9,10,11];if(before(d,1,termDay(y,0)))return 11;for(let i=11;i>=0;i--)if(!before(d,months[i],termDay(y,i)))return map[i];return 11}function mstar(d,s){const group=[1,4,7].includes(s)?1:([2,5,8].includes(s)?2:3),sm=solarMonth(d),tables={1:[8,7,6,5,4,3,2,1,9,8,7,6],2:[5,4,3,2,1,9,8,7,6,5,4,3],3:[2,1,9,8,7,6,5,4,3,2,1,9]};return tables[group][sm-1]}function yc(y){return W(11-root([...String(y)].reduce((a,b)=>a+ +b,0)))}function mc(y,m){return W(({0:3,1:9,2:6}[(y%3+3)%3])-m+1)}function palace(s,c){return pal[base.findIndex(v=>W(v+c-1)==s)]}function direction(s,c){return dirs[base.findIndex(v=>W(v+c-1)==s)]}const opp={'東南':'西北','南':'北','西南':'東北','東':'西','西':'東','東北':'西南','北':'南','西北':'東南','中央':'中央'},compat={1:[3,4,6,7],2:[6,7,9],3:[1,9],4:[1,9],5:[6,7,9],6:[1,2,5,8],7:[1,2,5,8],8:[6,7,9],9:[2,3,4,5,8]};function rows(f,y){return '<div class="row"><b>'+(y?'今年':'今月')+'はこんな気分：</b>'+f[2]+'</div><div class="row"><b>アドバイス：</b>'+f[6]+'</div><div class="row"><b>仕事運：</b>'+f[3]+'</div><div class="row"><b>対人運：</b>'+f[4]+'</div><div class="row"><b>恋愛運：</b>'+f[5]+'</div><div class="row warn"><b>注意：</b>'+f[7]+'</div>'}const el={birth:document.querySelector('#birth'),target:document.querySelector('#target'),go:document.querySelector('#go'),main:document.querySelector('#main'),monthStar:document.querySelector('#monthStar'),yk:document.querySelector('#yk'),ym:document.querySelector('#ym'),yr:document.querySelector('#yr'),mk:document.querySelector('#mk'),mm:document.querySelector('#mm'),mr:document.querySelector('#mr'),scores:document.querySelector('#scores'),good:document.querySelector('#good'),bad:document.querySelector('#bad'),yearAnken:document.querySelector('#yearAnken'),monthAnken:document.querySelector('#monthAnken')};function render(){if(!el.birth.value||!el.target.value){alert('生年月日と占いたい日を入力してください');return}const b=new Date(el.birth.value+'T12:00:00'),t=new Date(el.target.value+'T12:00:00');if(Number.isNaN(b.getTime())||Number.isNaN(t.getTime())){alert('正しい日付を入力してください');return}const s=calcMainStar(b),bs=mstar(b,s),yearCenter=yc(t.getFullYear()),Y=F[palace(s,yearCenter)],c=mc(t.getFullYear(),t.getMonth()+1),M=F[palace(s,c)];el.main.textContent=names[s];el.monthStar.textContent=names[bs];el.yk.textContent=Y[0];el.ym.textContent=Y[1];el.yr.innerHTML=rows(Y,1);el.mk.textContent=M[0];el.mm.textContent=M[1];el.mr.innerHTML=rows(M,0);const labs=['総合','仕事運','恋愛運','金運','健康運'];el.scores.innerHTML=labs.map((x,i)=>'<div class="score"><small>'+x+'</small><b>'+M[i+8]+'点</b><div class="bar"><i style="width:'+M[i+8]+'%"></i></div></div>').join('');const bd=direction(5,c),dk=opp[bd],gd=compat[s].map(x=>direction(x,c)).filter((x,i,a)=>x!='中央'&&x!=bd&&x!=dk&&a.indexOf(x)==i);el.good.textContent=gd.join('・')||'なし';el.bad.textContent=bd;const yearDark=opp[direction(5,yearCenter)],monthDark=opp[direction(5,c)];el.yearAnken.classList.toggle('show',direction(s,yearCenter)===yearDark);el.monthAnken.classList.toggle('show',direction(s,c)===monthDark)}el.go.addEventListener('click',render);el.birth.addEventListener('change',render);el.target.addEventListener('change',render);render();
-</script></body></html>
+(function(){
+"use strict";
+
+var $=function(id){return document.getElementById(id);};
+var R=Math.PI/180, D=180/Math.PI;
+
+function mod(n){return ((n%360)+360)%360;}
+
+function daysFromJ2000(date,time){
+  var p=date.split("-");
+  var t=(time||"12:00").split(":");
+  var ms=Date.UTC(Number(p[0]),Number(p[1])-1,Number(p[2]),Number(t[0])||0,Number(t[1])||0);
+  return ms/86400000-10957.5;
+}
+
+/*
+ * ここでは「天体計算」と「表示」を完全に分けています。
+ * 以前のコードで計算途中に止まっていた場合でも、
+ * どこで止まったかを画面に表示できます。
+ */
+function getPlanets(d){
+  var earth={};
+
+  // 太陽・地球
+  var M=mod(356.047+0.9856002585*d);
+  var e=0.016709-0.000000001151*d;
+  var E=M*R+e*Math.sin(M*R)*(1+e*Math.cos(M*R));
+  var x=Math.cos(E)-e;
+  var y=Math.sqrt(1-e*e)*Math.sin(E);
+  var v=Math.atan2(y,x)*D;
+  var dist=Math.sqrt(x*x+y*y);
+  var sun=mod(v+282.9404+0.0000470935*d);
+  earth.x=dist*Math.cos(sun*R);
+  earth.y=dist*Math.sin(sun*R);
+
+  var out={太陽:sun,_earth:earth};
+
+  var data={
+    水星:[48.3313,0.0000324587,7.0047,0.00000005,29.1241,0.0000101444,0.387098,0,0.205635,-0.000000000559,168.6562,4.0923344368],
+    金星:[76.6799,0.000024659,3.3946,0.0000000275,54.891,0.0000138374,0.72333,0,0.006773,-0.000000001302,48.0052,1.6021302244],
+    火星:[49.5574,0.0000211081,1.8497,-0.0000000178,286.5016,0.0000292961,1.523688,0,0.093405,0.000000002516,18.6021,0.5240207766],
+    木星:[100.4542,0.0000276854,1.303,-0.0000001557,273.8777,0.0000164505,5.20256,0,0.048498,0.000000004469,19.895,0.0830853001],
+    土星:[113.6634,0.000023898,2.4886,-0.0000001081,339.3939,0.0000297661,9.55475,0,0.055546,-0.000000009499,316.967,0.0334442282],
+    天王星:[74.0005,0.000013978,0.7733,0.000000019,96.6612,0.000030565,19.18171,-0.0000000155,0.047318,0.00000000745,142.5905,0.011725806],
+    海王星:[131.7806,0.000030173,1.77,-0.000000255,272.8461,-0.000006027,30.05826,0.00000003313,0.008606,0.00000000215,260.2471,0.005995147]
+  };
+
+  Object.keys(data).forEach(function(k){
+    var a=data[k];
+    var N=(a[0]+a[1]*d)*R;
+    var inc=(a[2]+a[3]*d)*R;
+    var w=(a[4]+a[5]*d)*R;
+    var sm=a[6]+a[7]*d;
+    var ec=a[8]+a[9]*d;
+    var ma=(a[10]+a[11]*d)*R;
+    var en=ma+ec*Math.sin(ma)*(1+ec*Math.cos(ma));
+    var xx=sm*(Math.cos(en)-ec);
+    var yy=sm*Math.sqrt(1-ec*ec)*Math.sin(en);
+    var tv=Math.atan2(yy,xx)*D;
+    var rr=Math.sqrt(xx*xx+yy*yy);
+    var X=rr*(Math.cos(N)*Math.cos((tv*R)+w)-Math.sin(N)*Math.sin((tv*R)+w)*Math.cos(inc));
+    var Y=rr*(Math.sin(N)*Math.cos((tv*R)+w)+Math.cos(N)*Math.sin((tv*R)+w)*Math.cos(inc));
+    out[k]=mod(Math.atan2(Y+earth.y,X+earth.x)*D);
+  });
+
+  // 月の簡易位置
+  var mm=mod(115.3654+13.0649929509*d);
+  var node=mod(125.1228-0.0529538083*d);
+  var moon=mod(mm+node+318.0634+0.1643573223*d);
+  out.月=moon;
+
+  // 冥王星：長期変化を見るための簡易位置
+  out.冥王星=mod(238.95+0.003968789*d);
+
+  return out;
+}
+
+var aspects=[
+  {a:0,n:"強く重なる",s:"変化の時"},
+  {a:60,n:"協力しやすい",s:"追い風"},
+  {a:90,n:"ぶつかって見直す",s:"要調整"},
+  {a:120,n:"自然に活かせる",s:"追い風"},
+  {a:180,n:"向き合って調整する",s:"要調整"}
+];
+
+var current=["太陽","火星","木星","土星","天王星","海王星","冥王星"];
+var natal=["太陽","月","水星","金星","火星"];
+var force={太陽:"関心・意識",火星:"行動力",木星:"成長・広がり",土星:"責任・見直し",天王星:"変化・自由",海王星:"理想・直感",冥王星:"根本的な変化"};
+var theme={太陽:"自分らしさ",月:"心の安心",水星:"考え方・伝え方",金星:"恋愛・人間関係",火星:"行動・自己主張"};
+var duration={太陽:"約1週間",火星:"約2～3週間",木星:"約1～2か月",土星:"約2～4か月",天王星:"約3～6か月",海王星:"約3～6か月",冥王星:"約4～8か月"};
+var pBonus={太陽:2,火星:3,木星:8,土星:9,天王星:7,海王星:6,冥王星:10};
+var nBonus={太陽:5,月:4,水星:2,金星:3,火星:3};
+var zodiac=["牡羊座♈","牡牛座♉","双子座♊","蟹座♋","獅子座♌","乙女座♍","天秤座♎","蠍座♏","射手座♐","山羊座♑","水瓶座♒","魚座♓"];
+
+var events={
+太陽:{追い風:"自分の方向性が見えやすく、やりたかったことを進めやすくなります。",変化の時:"今までの目標や役割を変えたくなり、新しい方向へ動きたくなります。",要調整:"周囲の期待と自分の希望が合わず、進む方向に迷いやすくなります。"},
+月:{追い風:"気持ちが安定しやすく、安心できる人や環境を選びやすくなります。",変化の時:"気分や生活リズムが変わりやすく、心地よい居場所を作り直したくなります。",要調整:"感情が揺れやすく、疲れや不安を抱え込みやすくなります。"},
+水星:{追い風:"考えがまとまりやすく、相談・説明・連絡がスムーズに進みます。",変化の時:"新しい考えが次々に浮かび、伝え方や学び方を変えたくなります。",要調整:"考えが散らかりやすく、誤解や確認不足が起こりやすくなります。"},
+金星:{追い風:"人との関係を心地よく進めやすく、本音や好みも伝えやすくなります。",変化の時:"人間関係や好きなものが変わりやすく、新しい出会いや価値観に惹かれます。",要調整:"相手との温度差や、お金・価値観の違いが気になりやすくなります。"},
+火星:{追い風:"行動力が高まり、自分の意見を出して物事を前へ進めやすくなります。",変化の時:"急にやる気が高まり、今までと違う方法を試したくなります。",要調整:"焦りや苛立ちが出やすく、言い過ぎや無理な行動につながりやすくなります。"}
+};
+
+var action={
+追い風:["今いちばん進めたいことを一つ選び、具体的な一歩を今日中に始めましょう。","調子がよくても予定を詰め込みすぎず、大切な確認は省かないようにしましょう。"],
+変化の時:["変えたいことを一つ書き出し、小さく試してから本格的に切り替えましょう。","勢いだけで全部を変えず、続けたいものと手放すものを分けましょう。"],
+要調整:["違和感の原因を整理し、急いで結論を出さずに一つずつ整えましょう。","疲れているときの決断や感情的な返事を避け、事実を確認しましょう。"]
+};
+
+function reading(t,s){
+  return "【今の状態】"+theme[t]+"は「"+s+"」です。\n【起こりやすいこと】"+events[t][s]+"\n【やること】"+action[s][0]+"\n【注意点】"+action[s][1];
+}
+
+function showError(e){
+  $("an-error").style.display="block";
+  $("an-error").textContent="計算エラー："+(e&&e.message?e.message:String(e));
+  $("an-status").textContent="計算に失敗しました。";
+}
+
+function analyze(){
+  $("an-error").style.display="none";
+  $("an-status").textContent="計算中…";
+
+  try{
+    var ad=$("an-date").value;
+    var bd=$("an-birth").value;
+    var bt=$("an-time").value||"12:00";
+
+    if(!ad||!bd){
+      $("an-status").textContent="分析日と生年月日を入力してください。";
+      return;
+    }
+
+    var cp=getPlanets(daysFromJ2000(ad,"12:00"));
+    var np=getPlanets(daysFromJ2000(bd,bt));
+    var hits=[];
+
+    current.forEach(function(c){
+      natal.forEach(function(n){
+        var dif=Math.abs(cp[c]-np[n]);
+        dif=Math.min(dif,360-dif);
+        var best=aspects[0];
+
+        aspects.forEach(function(a){
+          if(Math.abs(dif-a.a)<Math.abs(dif-best.a))best=a;
+        });
+
+        var orb=Math.abs(dif-best.a);
+        var limit=(c==="太陽"||c==="火星")?5:4;
+
+        if(orb<=limit){
+          hits.push({c:c,n:n,asp:best,orb:orb,score:100-orb*10+pBonus[c]+nBonus[n]});
+        }
+      });
+    });
+
+    hits.sort(function(a,b){return b.score-a.score;});
+    var top=hits.slice(0,6);
+
+    if(top.length){
+      $("an-top").textContent=reading(top[0].n,top[0].asp.s);
+      $("an-cards").innerHTML=top.map(function(x,i){
+        return '<article class="an-card"><div class="an-card-head"><span class="an-rank">'+(i+1)+'</span><h3>'+force[x.c]+' × '+theme[x.n]+'</h3><span class="an-badge '+x.asp.s+'">'+x.asp.s+'</span></div><div class="an-meta">'+x.asp.n+'｜'+duration[x.c]+'｜誤差 '+x.orb.toFixed(1)+'°</div><div class="an-reading">'+reading(x.n,x.asp.s)+'</div></article>';
+      }).join("");
+    }else{
+      $("an-top").textContent="【今の状態】大きな変化が少ない時期です。\n【起こりやすいこと】普段どおりのペースで過ごしやすいでしょう。\n【やること】後回しにしていた小さな用事を一つ終わらせましょう。\n【注意点】変化がないことを焦らず、生活の土台を整えましょう。";
+      $("an-cards").innerHTML='<div class="an-empty">今は大きな変化が少ない時期です。生活の土台を整えましょう。</div>';
+    }
+
+    $("an-sky").innerHTML=current.map(function(x){
+      return "<div><strong>"+x+"</strong><br>"+zodiac[Math.floor(mod(cp[x])/30)]+"</div>";
+    }).join("");
+
+    $("an-status").textContent="占い結果を更新しました。";
+  }catch(e){
+    showError(e);
+  }
+}
+
+// 初期値
+(function init(){
+  var d=new Date();
+  var pad=function(n){return String(n).padStart(2,"0");};
+  $("an-date").value=d.getFullYear()+"-"+pad(d.getMonth()+1)+"-"+pad(d.getDate());
+  $("an-birth").value="1984-12-24";
+  $("an-time").value="12:00";
+
+  $("an-run").addEventListener("click",analyze);
+  $("an-date").addEventListener("change",analyze);
+  $("an-birth").addEventListener("change",analyze);
+  $("an-time").addEventListener("change",analyze);
+
+  analyze();
+})();
+})();
+</script>
+</div>
+</body>
+</html>
