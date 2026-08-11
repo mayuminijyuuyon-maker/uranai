@@ -18,7 +18,7 @@
 </style>
 
 <section class="an-hero">
-<div style="font-size:12px;opacity:.8">動作確認版 v6</div>
+<div style="font-size:12px;opacity:.8">動作確認版 v8</div>
 <h1>今のわたし、星的にはどう？</h1>
 <p>追い風・変化・見直しポイントと、今の過ごし方</p>
 </section>
@@ -45,6 +45,15 @@
 <div id="an-error" style="display:none;margin-top:10px;padding:10px;border-radius:10px;background:#ffe2e2;color:#8a1f2d;font-weight:bold"></div>
 </section>
 
+<section class="an-box">
+<h2 class="an-title">🌟 生まれ持った私</h2>
+<div id="an-natal"></div>
+</section>
+<section class="an-box">
+<h2 class="an-title">🔄 今の私は、ちょっと違う？</h2>
+<div id="an-current"></div>
+<div id="an-difference" style="margin-top:12px"></div>
+</section>
 <section class="an-box an-main"><h2 class="an-title">今の最重要テーマ｜4つのポイント</h2><pre id="an-top">結果を計算しています…</pre></section>
 <section class="an-box"><h2 class="an-title">今、影響が強いこと（最大6件）</h2><div class="an-cards" id="an-cards"><div class="an-empty">結果を計算しています…</div></div></section>
 <section class="an-box"><h2 class="an-title">参考｜今の空の動き</h2><div class="an-sky" id="an-sky"></div><p class="an-note">🟢 追い風：自然に進めやすい　🟡 変化の時：新しい動きが起きやすい　🔴 要調整：焦らず見直しが必要</p></section>
@@ -169,6 +178,84 @@ function showError(e){
   $("an-status").textContent="計算に失敗しました。";
 }
 
+
+function personalityText(planet, sign){
+  var t={
+    太陽:{
+      牡羊座:"自分で決めたらまず動く、率直で行動の早いタイプ。",
+      牡牛座:"自分のペースと安心感を大切にし、納得したことをじっくり育てるタイプ。",
+      双子座:"好奇心が強く、情報を集めながら柔軟に考えるタイプ。",
+      蟹座:"身近な人や安心できる場所を大切にするタイプ。",
+      獅子座:"自分らしさを堂々と表現し、好きなことに誇りを持つタイプ。",
+      乙女座:"細かなところによく気づき、整えてから動く現実的なタイプ。",
+      天秤座:"人とのバランスを見ながら、納得できる落としどころを探すタイプ。",
+      蠍座:"表面的なことより本質を重視し、深く関わるタイプ。",
+      射手座:"自由に学び、可能性を広げていくタイプ。",
+      山羊座:"責任感が強く、時間をかけて確かな結果を作るタイプ。",
+      水瓶座:"自分なりの考えを持ち、独自の方法を選ぶタイプ。",
+      魚座:"直感や共感力が強く、雰囲気まで感じ取りやすいタイプ。"
+    },
+    月:{
+      牡羊座:"気持ちの反応が早く、嫌なことは早く切り替えたい傾向。",
+      牡牛座:"安心できる環境や生活の安定が心の落ち着きにつながる傾向。",
+      双子座:"話すこと、知ること、気分転換で心を整えやすい傾向。",
+      蟹座:"身近な人とのつながりや居場所への安心感を大切にする傾向。",
+      獅子座:"自分らしく扱われることや、好きなことを楽しむことが心の栄養になる傾向。",
+      乙女座:"身の回りが整っていると安心し、細かな違和感にも気づきやすい傾向。",
+      天秤座:"穏やかな人間関係や公平さが心の安定につながる傾向。",
+      蠍座:"感情を簡単には表に出さず、深く信頼できる相手を求める傾向。",
+      射手座:"自由に動いたり新しいものに触れたりすると気分が晴れやすい傾向。",
+      山羊座:"自分の役割を果たせている感覚が安心感につながる傾向。",
+      水瓶座:"一人の時間や自分だけの考えを持てる余白を必要とする傾向。",
+      魚座:"周囲の感情を受け取りやすく、静かな時間で回復しやすい傾向。"
+    }
+  };
+  return (t[planet]&&t[planet][sign])||"";
+}
+
+function signName(deg){
+  var z=["牡羊座","牡牛座","双子座","蟹座","獅子座","乙女座","天秤座","蠍座","射手座","山羊座","水瓶座","魚座"];
+  return z[Math.floor(mod(deg)/30)];
+}
+
+function showPersonality(np,top){
+  var natalLines=[];
+  ["太陽","月"].forEach(function(p){
+    var s=signName(np[p]);
+    var text=personalityText(p,s);
+    if(text)natalLines.push('<div class="an-profile"><strong>'+p+'｜'+s+'</strong><p>'+text+'</p></div>');
+  });
+  $("an-natal").innerHTML=natalLines.join("");
+
+  if(!top.length){
+    $("an-current").innerHTML='<div class="an-profile"><strong>今は大きな変化が少なめ</strong><p>今は生まれ持った性質と大きく違う動きが出にくい時期です。</p></div>';
+    $("an-difference").innerHTML="";
+    return;
+  }
+
+  var x=top[0];
+  var effect={
+    太陽:"自分らしさや「私はどうしたい？」という感覚が前面に出やすい時期です。",
+    火星:"行動力や自己主張が強まり、普段より早く動きたくなりやすい時期です。",
+    木星:"成長したい、広げたいという気持ちが強まりやすい時期です。",
+    土星:"責任や現実的な課題が目につき、整理したくなりやすい時期です。",
+    天王星:"今までのやり方を変えたい気持ちが強まり、自由を求めやすい時期です。",
+    海王星:"直感や理想が強まり、イメージに意識が向きやすい時期です。",
+    冥王星:"表面的な変更より、根本から変えたい気持ちが強まりやすい時期です。"
+  }[x.c];
+
+  $("an-current").innerHTML='<div class="an-profile"><strong>'+force[x.c]+' × '+theme[x.n]+'｜'+x.asp.s+'</strong><p>'+effect+' '+events[x.n][x.asp.s]+'</p></div>';
+
+  var natal=personalityText(x.n,signName(np[x.n]));
+  var diff=x.asp.s==="追い風"
+    ?"本来の性質を無理に変えるというより、今はその性質を使いやすくなっています。"
+    :x.asp.s==="変化の時"
+    ?"本来の性質は残っていますが、今はそこに「変えてみたい」という力が加わっています。"
+    :"本来の性質と今の流れに摩擦が出やすく、「いつもの自分ならこうするのに」と感じる場面が出やすいでしょう。";
+
+  $("an-difference").innerHTML='<div class="an-diff"><strong>生まれ持った傾向との差</strong><p>'+natal+'</p><p>'+diff+'</p></div>';
+}
+
 function analyze(){
   $("an-error").style.display="none";
   $("an-status").textContent="計算中…";
@@ -208,6 +295,7 @@ function analyze(){
 
     hits.sort(function(a,b){return b.score-a.score;});
     var top=hits.slice(0,6);
+      showPersonality(np,top);
 
     if(top.length){
       $("an-top").textContent=reading(top[0].n,top[0].asp.s);
