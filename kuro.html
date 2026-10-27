@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🧙‍♀️ 毎月うらない 🧙‍♀️</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Hiragino Sans', 'Yu Gothic', sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            min-height: 100vh;
+            color: #e8e8e8;
+        }
+        .container {
+            max-width: 500px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        header {
+            text-align: center;
+            padding: 30px 0;
+        }
+        header h1 {
+            font-size: 2em;
+            background: linear-gradient(45deg, #ff6b6b, #feca57, #ff6b6b);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 30px rgba(255,107,107,0.3);
+        }
+        header p {
+            color: #888;
+            margin-top: 10px;
+            font-size: 0.9em;
+        }
+        .card {
+            background: rgba(255,255,255,0.05);
+            border-radius: 20px;
+            padding: 25px;
+            margin: 20px 0;
+            border: 1px solid rgba(255,255,255,0.1);
+            backdrop-filter: blur(10px);
+        }
+        .card h2 {
+            color: #ff6b6b;
+            font-size: 1.1em;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        label {
+            display: block;
+            color: #aaa;
+            font-size: 0.85em;
+            margin-bottom: 8px;
+        }
+        .date-inputs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        .date-inputs input {
+            flex: 1;
+            padding: 12px;
+            border: 2px solid #333;
+            border-radius: 10px;
+            background: rgba(0,0,0,0.3);
+            color: #fff;
+            font-size: 1em;
+            text-align: center;
+        }
+        .date-inputs input:focus {
+            outline: none;
+            border-color: #ff6b6b;
+            box-shadow: 0 0 15px rgba(255,107,107,0.3);
+        }
+        button {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(45deg, #ff6b6b, #ee5a5a);
+            border: none;
+            border-radius: 12px;
+            color: white;
+            font-size: 1.1em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 10px;
+        }
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(255,107,107,0.4);
+        }
+        button:active { transform: translateY(0); }
+        #result { display: none; }
+        .honmeisei {
+            text-align: center;
+            padding: 20px;
+            background: linear-gradient(135deg, rgba(255,107,107,0.2), rgba(254,202,87,0.1));
+            border-radius: 15px;
+            margin-bottom: 20px;
+        }
+        .honmeisei .star {
+            font-size: 2em;
+            font-weight: bold;
+            color: #feca57;
+        }
+        .keyword-box {
+            background: rgba(0,0,0,0.3);
+            padding: 20px;
+            border-radius: 15px;
+            text-align: center;
+            margin: 15px 0;
+            border-left: 4px solid #ff6b6b;
+        }
+        .keyword {
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #ff6b6b;
+        }
+        .meaning {
+            margin-top: 10px;
+            color: #ccc;
+            line-height: 1.6;
+        }
+        .meaning .negative { color: #ff6b6b; }
+        .meaning .positive { color: #5dade2; }
+        .fortune-item {
+            padding: 12px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+        .fortune-item:last-child { border-bottom: none; }
+        .fortune-item .label {
+            color: #888;
+            font-size: 0.85em;
+        }
+        .fortune-item .value {
+            margin-top: 5px;
+            line-height: 1.5;
+        }
+        .score-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            margin: 15px 0;
+        }
+        .score-item {
+            background: rgba(0,0,0,0.2);
+            padding: 15px;
+            border-radius: 12px;
+            text-align: center;
+        }
+        .score-item .type { color: #888; font-size: 0.8em; }
+        .score-item .score {
+            font-size: 1.8em;
+            font-weight: bold;
+            margin: 5px 0;
+        }
+        .score-item .comment { font-size: 0.75em; color: #ff6b6b; }
+        .score-low { color: #e74c3c; }
+        .score-mid { color: #f39c12; }
+        .score-high { color: #27ae60; }
+        .direction-box {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 15px;
+        }
+        .direction {
+            text-align: center;
+            padding: 15px 25px;
+            border-radius: 12px;
+        }
+        .direction.good {
+            background: rgba(46,204,113,0.2);
+            border: 1px solid rgba(46,204,113,0.3);
+        }
+        .direction.bad {
+            background: rgba(231,76,60,0.2);
+            border: 1px solid rgba(231,76,60,0.3);
+        }
+        .direction .label { font-size: 0.8em; color: #888; }
+        .direction .dir {
+            font-size: 1.3em;
+            font-weight: bold;
+            margin-top: 5px;
+        }
+        .direction.good .dir { color: #2ecc71; }
+        .direction.bad .dir { color: #e74c3c; }
+        .advice-box {
+            background: linear-gradient(135deg, rgba(255,107,107,0.1), rgba(0,0,0,0.2));
+            padding: 20px;
+            border-radius: 15px;
+            margin-top: 15px;
+        }
+        .advice-box h3 {
+            color: #feca57;
+            margin-bottom: 10px;
+        }
+        .warning {
+            margin-top: 15px;
+            padding: 15px;
+            background: rgba(231,76,60,0.2);
+            border-radius: 10px;
+            border-left: 3px solid #e74c3c;
+        }
+        .warning .label { color: #e74c3c; font-weight: bold; }
+        footer {
+            text-align: center;
+            padding: 30px;
+            color: #555;
+            font-size: 0.8em;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🧙‍♀️ 毎月うらない</h1>
+            <p>現実を突きつける。でも最後に救いはある。</p>
+        </header>
+
+        <div class="card" id="inputCard">
+            <h2>📅 生年月日を入力</h2>
+            <label>西暦・月・日を入力してね</label>
+            <div class="date-inputs">
+                <input type="number" id="year" placeholder="1990" min="1900" max="2030">
+                <input type="number" id="month" placeholder="1" min="1" max="12">
+                <input type="number" id="day" placeholder="1" min="1" max="31">
+            </div>
+            <button onclick="uranau()">🔮 占う</button>
+        </div>
+
+        <div id="result">
+            <div class="card">
+                <div class="honmeisei">
+                    <div style="color:#888;font-size:0.9em;">あなたの本命星</div>
+                    <div class="star" id="honmeisei"></div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2>📆 今月の運勢</h2>
+                <div class="keyword-box">
+                    <div class="keyword" id="monthKeyword"></div>
+                    <div class="meaning" id="monthMeaning"></div>
+                </div>
+                <div id="monthFortune"></div>
+            </div>
+
+            <div class="card">
+                <h2>📊 今月のスコア</h2>
+                <div class="score-grid" id="scores"></div>
+            </div>
+
+            <div class="card">
+                <h2>🧭 方位</h2>
+                <div class="direction-box">
+                    <div class="direction good">
+                        <div class="label">行くといいかも</div>
+                        <div class="dir" id="goodDir"></div>
+                    </div>
+                    <div class="direction bad">
+                        <div class="label">やめとけ</div>
+                        <div class="dir" id="badDir"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2>💬 アドバイス</h2>
+                <div class="advice-box">
+                    <p id="advice"></p>
+                </div>
+                <div class="warning">
+                    <div class="label">⚠️ これやるとヤバい</div>
+                    <p id="warning"></p>
+                </div>
+            </div>
+
+            <button onclick="location.reload()">🔄 もう一回占う</button>
+        </div>
+
+        <footer>
+            <p>🧙‍♀️ 毎月うらない 🧙‍♀️</p>
+            <p>結局は自分次第…</p>
+        </footer>
+    </div>
+
+    <script>
+        // 九宮データ（毒舌＋救いバージョン）
+        const kyukyu = {
+            1: { keyword: "孤独・停滞", meaning: "孤独を感じやすい時期…<span class='positive'>でも自分を見つめ直すチャンス</span>", personality: "内向的、慎重派、一人が落ち着く", work: "成果出にくいけど、種まき期間だと思って", social: "既読スルーされがち…<span class='positive'>でも深い友達には恵まれる</span>", advice: "焦るな、今は充電期間。必ず浮上する", warning: "無理に明るく振る舞うこと", love: "脈なし…と思いきや、相手も様子見中かも", scores: {total:30, work:25, love:25, money:25, health:35} },
+            8: { keyword: "行き詰まり・迷走", meaning: "迷ってる自分を責めないで。<span class='positive'>それも成長の一部</span>", personality: "優柔不断だけど、慎重とも言える", work: "転職悩むよね…でも悩めるのは選択肢があるから", social: "浅い付き合いは減る。<span class='positive'>でも本当の友達が見える</span>", advice: "迷っていい。答えは急がなくていい", warning: "「早く決めなきゃ」と自分を追い詰めること", love: "恋愛は停滞気味…でも自分磨きの時間に使える", scores: {total:35, work:35, love:30, money:25, health:40} },
+            3: { keyword: "空回り・失敗", meaning: "空回りしやすい…<span class='positive'>けど動いた分だけ経験値になる</span>", personality: "せっかちだけど、行動力はある", work: "失敗するかも。でも失敗は成功の元って言うし", social: "暑苦しいと思われがち…<span class='positive'>でも情熱は伝わってる</span>", advice: "転んでも立ち上がれ。傷は勲章だ", warning: "結果を急ぎすぎること", love: "勢いで告白→撃沈リスクあり。でも後悔はしない", scores: {total:50, work:55, love:45, money:35, health:60} },
+            4: { keyword: "八方美人・疲弊", meaning: "気を使いすぎて疲れる…<span class='positive'>でも優しさは伝わってる</span>", personality: "人に合わせがちだけど、協調性があるとも言う", work: "便利に使われてる？いや、頼りにされてる", social: "利用されてる？<span class='positive'>いや、必要とされてる</span>", advice: "たまには断っていい。自分も大事にしろ", warning: "全員に好かれようとすること", love: "尽くしすぎ注意。でもその誠実さは見てる人いる", scores: {total:55, work:50, love:55, money:45, health:50} },
+            9: { keyword: "虚栄・炎上", meaning: "目立ちすぎて疲れる…<span class='positive'>でも注目は才能の証</span>", personality: "承認欲求強めだけど、向上心があるとも言う", work: "足元すくわれそう…でも実力があるから大丈夫", social: "嫉妬されてる？<span class='positive'>それは認められてる証拠</span>", advice: "謙虚さを忘れずに。でも自信は持っていい", warning: "自慢話ばかりすること", love: "モテ期だけど調子乗ると痛い目見る。謙虚にね", scores: {total:70, work:75, love:60, money:45, health:50} },
+            2: { keyword: "報われない努力", meaning: "頑張りが見えにくい…<span class='positive'>でも必ず誰かが見てる</span>", personality: "地味だけど、堅実で信頼できる", work: "横取りされそう…でも実力は本物だからまた来る", social: "感謝されにくい…<span class='positive'>でもあなたがいないと回らない</span>", advice: "見返り求めず続けろ。いつか必ず報われる", warning: "愚痴を言いすぎること", love: "地味にアプローチ→時間かかるけど実る", scores: {total:50, work:45, love:55, money:60, health:45} },
+            7: { keyword: "散財・浪費", meaning: "お金飛んでく…<span class='positive'>でも経験に投資したと思えば</span>", personality: "浪費家だけど、人生楽しんでるとも言える", work: "金欠注意。でも人脈は財産になってる", social: "金づる扱い？<span class='positive'>いや、一緒にいて楽しいんだよ</span>", advice: "使う時は使う、締める時は締める。メリハリ", warning: "見栄を張りすぎること", love: "おごりすぎ注意。でも気前よさは魅力", scores: {total:65, work:45, love:65, money:30, health:55} },
+            6: { keyword: "孤立・重圧", meaning: "責任重い…<span class='positive'>でも任されるのは信頼の証</span>", personality: "頑固だけど、芯が通ってるとも言う", work: "給料上がらない…でも経験値は爆上がり中", social: "距離置かれてる？<span class='positive'>いや、尊敬されてる</span>", advice: "完璧じゃなくていい。頑張りすぎるな", warning: "一人で全部やろうとすること", love: "重いと思われそう…でも真剣さは伝わる", scores: {total:60, work:70, love:35, money:55, health:50} },
+            5: { keyword: "無気力・虚無", meaning: "やる気出ない…<span class='positive'>でも休むのも大事な仕事</span>", personality: "無気力だけど、エネルギー充電中とも言える", work: "何もできない…でもそういう時期もある", social: "理解者いない…<span class='positive'>でも自分だけは自分の味方</span>", advice: "今は休め。嵐の前の静けさだ", warning: "無理に動こうとすること", love: "出会いない…でも自分磨き期間だと思って", scores: {total:25, work:20, love:20, money:30, health:30} }
+        };
+
+        const starNames = ["一白水星","二黒土星","三碧木星","四緑木星","五黄土星","六白金星","七赤金星","八白土星","九紫火星"];
+        const directions = ["北","東北","東","東南","南","西南","西","西北"];
+
+        function calcHonmeisei(year, month, day) {
+            // 節入り判定: 1月、または2月4日以前なら前年として扱う
+            let adjustedYear = year;
+            if (month < 2 || (month === 2 && day < 4)) {
+                adjustedYear = year - 1;
+            }
+            
+            // 各桁を足す
+            let digitSum = String(adjustedYear).split('').reduce((sum, d) => sum + parseInt(d), 0);
+            
+            // 10以上なら再度一桁に
+            while (digitSum >= 10) {
+                digitSum = String(digitSum).split('').reduce((sum, d) => sum + parseInt(d), 0);
+            }
+            
+            // 11から引く
+            let result = 11 - digitSum;
+            
+            // 9を超えたら9を引く
+            if (result > 9) result -= 9;
+            
+            return result;
+        }
+
+        function calcGetsuban(year, month) {
+            // 簡易計算（実際はもっと複雑）
+            const yearStar = calcHonmeisei(year);
+            const monthNum = ((yearStar * 3 + month + 8) % 9);
+            return monthNum === 0 ? 9 : monthNum;
+        }
+
+        function getScoreClass(score) {
+            if (score >= 60) return 'score-high';
+            if (score >= 40) return 'score-mid';
+            return 'score-low';
+        }
+
+        function getScoreComment(type, score) {
+            const comments = {
+                work: score < 40 ? '← 慎重に' : score >= 60 ? '← いける！' : '',
+                love: score < 40 ? '← 💔' : score >= 60 ? '← 💕' : '',
+                money: score < 40 ? '← 💸' : score >= 60 ? '← 💰' : '',
+                health: score < 40 ? '← 😴' : score >= 60 ? '← 💪' : ''
+            };
+            return comments[type] || '';
+        }
+
+        function uranau() {
+            const year = parseInt(document.getElementById('year').value);
+            const month = parseInt(document.getElementById('month').value);
+            const day = parseInt(document.getElementById('day').value);
+
+            if (!year || !month || !day) {
+                alert('全部入力してくれ');
+                return;
+            }
+
+            const honmeisei = calcHonmeisei(year, month, day);
+            const now = new Date();
+            const currentMonth = now.getMonth() + 1;
+            const monthStar = calcGetsuban(now.getFullYear(), currentMonth);
+            
+            const data = kyukyu[monthStar];
+
+            document.getElementById('honmeisei').textContent = starNames[honmeisei - 1];
+            document.getElementById('monthKeyword').textContent = data.keyword;
+            document.getElementById('monthMeaning').innerHTML = data.meaning;
+            
+            document.getElementById('monthFortune').innerHTML = `
+                <div class="fortune-item">
+                    <div class="label">🧠 今月の気分</div>
+                    <div class="value">${data.personality}</div>
+                </div>
+                <div class="fortune-item">
+                    <div class="label">💼 仕事運</div>
+                    <div class="value">${data.work}</div>
+                </div>
+                <div class="fortune-item">
+                    <div class="label">👥 対人運</div>
+                    <div class="value">${data.social}</div>
+                </div>
+                <div class="fortune-item">
+                    <div class="label">💕 恋愛運</div>
+                    <div class="value">${data.love}</div>
+                </div>
+            `;
+
+            const s = data.scores;
+            document.getElementById('scores').innerHTML = `
+                <div class="score-item">
+                    <div class="type">総合</div>
+                    <div class="score ${getScoreClass(s.total)}">${s.total}</div>
+                </div>
+                <div class="score-item">
+                    <div class="type">仕事</div>
+                    <div class="score ${getScoreClass(s.work)}">${s.work}</div>
+                    <div class="comment">${getScoreComment('work', s.work)}</div>
+                </div>
+                <div class="score-item">
+                    <div class="type">恋愛</div>
+                    <div class="score ${getScoreClass(s.love)}">${s.love}</div>
+                    <div class="comment">${getScoreComment('love', s.love)}</div>
+                </div>
+                <div class="score-item">
+                    <div class="type">金運</div>
+                    <div class="score ${getScoreClass(s.money)}">${s.money}</div>
+                    <div class="comment">${getScoreComment('money', s.money)}</div>
+                </div>
+            `;
+
+            // 方位（簡易版）
+            document.getElementById('goodDir').textContent = directions[(honmeisei + 2) % 8];
+            document.getElementById('badDir').textContent = directions[(honmeisei + 5) % 8];
+
+            document.getElementById('advice').textContent = data.advice;
+            document.getElementById('warning').textContent = data.warning;
+
+            document.getElementById('inputCard').style.display = 'none';
+            document.getElementById('result').style.display = 'block';
+        }
+    </script>
+</body>
+</html>
